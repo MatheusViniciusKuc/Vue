@@ -14,7 +14,7 @@
             <imagem-responsiva
               :url="foto.url"
               :titulo="foto.titulo"
-              v-meu-transform
+              v-meu-transform.animate="15"
             />
             <meu-botao 
               rotulo="REMOVER" 
