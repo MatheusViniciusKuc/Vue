@@ -14,6 +14,7 @@
             <imagem-responsiva
               :url="foto.url"
               :titulo="foto.titulo"
+              v-meu-transform
             />
             <meu-botao 
               rotulo="REMOVER" 
@@ -27,7 +28,7 @@
       </ul>
     </div>
 </template>
-  
+
 <script>
 
 import Painel from '../shared/painel/Painel.vue'
