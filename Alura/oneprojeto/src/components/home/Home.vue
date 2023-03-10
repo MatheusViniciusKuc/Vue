@@ -2,6 +2,9 @@
 <template>
     <div>
       <h1 class="centralizado"> {{ titulo }} </h1>
+
+      <p v-show="mensagem" class="centralizado">{{ mensagem }}</p>
+
       <input 
         type="search" 
         class="filtro" 
@@ -16,6 +19,12 @@
               :titulo="foto.titulo"
               v-meu-transform.animate="15"
             />
+            <router-link :to="{ name: 'altera', params: { id: foto._id } }">
+              <meu-botao 
+                rotulo="ALTERAR" 
+                tipo="button"
+              />
+            </router-link>
             <meu-botao 
               rotulo="REMOVER" 
               tipo="button" 
@@ -34,6 +43,7 @@
 import Painel from '../shared/painel/Painel.vue'
 import ImagemResponsiva from '../shared/imagem-responsiva/ImagemResponsiva.vue'
 import Botao from '../shared/botao/Botao.vue'
+import FotoService from '../../domain/foto/FotoService'
   
 export default {
   
@@ -60,24 +70,33 @@ export default {
       return {
         titulo: 'Primeiro Projeto Vue',
         fotos: [],
-        filtro: ''
+        filtro: '',
+        mensagem: ''
       }
     },
 
     methods: {
 
       remove(foto) {
-        alert('Remove a foto ' + foto.titulo)  
+
+        this.service.apaga(foto._id)
+          .then(
+            () => {
+              let indice = this.fotos.indexOf(foto);
+              this.fotos.splice(indice, 1);
+              this.mensagem = 'Foto removida com sucesso'
+            }, 
+            err => this.mensagem = err.message
+          ) 
       }
     },
   
-    async created() {
-      try {
-        const res = await this.$http.get('http://localhost:3000/v1/fotos')
-        this.fotos = res.data
-      } catch (err) {
-        console.log(err)
-      }
+    created() {
+      this.service = new FotoService(this.$resource);
+
+      this.service
+        .lista()
+        .then(fotos => this.fotos = fotos, err => this.mensagem = err.message);
     }
 }
 </script>
